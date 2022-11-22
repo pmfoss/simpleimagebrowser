@@ -57,4 +57,4 @@ make
 
 ## License
 
-BSD-3-License
+BSD-3-Clause license
