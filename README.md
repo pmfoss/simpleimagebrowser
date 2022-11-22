@@ -1,6 +1,6 @@
 # Simple Image Browser
 
-[Screenshot](./screenshot.png "Screenshot")
+![Screenshot](./screenshot.png "Screenshot")
 
 ## Description
 
@@ -15,7 +15,7 @@ The main goals are:
 
 The following diagram shows the developed classes starting with the abbreviation `IB` (**I**mage **B**rowser) and its relations to realize the goals. All classes with a starting `Q` are part of Qt framework.
 
-[classes](./classes.svg)
+![classes](./classes.svg)
 
 ## Goals
 
