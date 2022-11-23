@@ -36,9 +36,6 @@ IBMainWindow::IBMainWindow(QWidget *parent, Qt::WindowFlags flags)
    this->tbRefresh->setIcon(QIcon::fromTheme(QStringLiteral("view-refresh")));
    this->tbMain->addWidget(this->tbRefresh);
 
-   this->lblPath = new QLabel(QStringLiteral("Path   "));
-   this->tbMain->addWidget(lblPath); 
-   
    /* file system combobox */
    this->cbPath = new IBFileComboBox(this);
    this->cbPath->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);

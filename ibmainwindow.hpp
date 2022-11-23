@@ -72,8 +72,6 @@ class IBMainWindow : public QMainWindow
     QToolButton *tbRefresh;
     /* menu toolbar button*/
     QToolButton *tbMenu;
-    /* path label */
-    QLabel *lblPath;
     /* central widget */
     QSplitter *swCentralWidget;
     /* combobox to selecting working directory */
