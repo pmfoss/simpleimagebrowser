@@ -53,13 +53,65 @@ void IBFileComboBox::initComboBox()
    this->bSkipNextHide = false;
    this->fsModel->setRootPath(QDir::rootPath());
    this->setRootModelIndex(this->fsModel->index(QDir::rootPath()));
-   this->setCurrentText(QDir::homePath());
+
+   this->iCurrentHistoryIndex = -1;
+   this->slHistory.clear();
+   this->goToHomeDirectory();
+}
+
+/* Decreases the current history index */
+void IBFileComboBox::goHistoryBack()
+{
+   if(this->iCurrentHistoryIndex > 0)
+   {
+      this->navigateTo(this->slHistory[--this->iCurrentHistoryIndex], true);
+   }
+}
+
+/* Increases the current history index */
+void IBFileComboBox::goHistoryForward()
+{
+   if(this->iCurrentHistoryIndex < this->slHistory.size())
+   {
+      this->navigateTo(this->slHistory[++this->iCurrentHistoryIndex], true);
+   }
+}
+
+/* Navigates to the home directory */
+void IBFileComboBox::goToHomeDirectory()
+{
+   this->navigateTo(QDir::homePath());
+}
+
+/* Sets the path (path) to the combo box and emits the signal pathChanged. If the path is not from the history operations 
+   (fromhistory == false) the history is rewound to the current history index. */
+void IBFileComboBox::navigateTo(const QString &path, bool fromhistory)
+{
+   if(this->slHistory.isEmpty() || (!fromhistory && this->slHistory.last() != path))
+   {
+      if(this->iCurrentHistoryIndex > 0)
+      {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+         this->slHistory.remove(this->iCurrentHistoryIndex, this->slHistory.size() - this->iCurrentHistoryIndex - 1)
+#else
+         while(this->iCurrentHistoryIndex < this->slHistory.size() - 1)
+         {
+            this->slHistory.removeLast();
+         }
+      }
+#endif /*(QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))*/
+      this->slHistory.append(path);
+      this->iCurrentHistoryIndex = this->slHistory.size() - 1;
+   }
+
+   this->setCurrentText(path);
+   emit this->pathChanged(path);
 }
 
 /* Sets the path (newpath) to be used. */
 void IBFileComboBox::setPath(const QString &newpath)
 {
-   this->setCurrentText(newpath);
+   this->navigateTo(newpath, false);
 }
 
 /* Returns the currently used path. */
@@ -78,7 +130,7 @@ bool IBFileComboBox::event(QEvent *e)
       if(keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
       {
          this->clearFocus();
-         emit this->pathChanged(this->currentText());
+         this->navigateTo(this->currentText(), false);
          return true;
       }
    } 
@@ -132,11 +184,10 @@ void IBFileComboBox::hidePopup()
    }
 }
 
-/* Sets the selected path to the combobox and emits the signal pathChanged. */
+/* Sets the selected path to the combobox. */
 void IBFileComboBox::onIndexChanged(int index)
 {
    Q_UNUSED(index)
 
-   this->setCurrentText(this->fsModel->filePath(this->tvView->currentIndex()));
-   emit this->pathChanged(this->currentText());
+   this->navigateTo(this->fsModel->filePath(this->tvView->currentIndex()), false);
 }
