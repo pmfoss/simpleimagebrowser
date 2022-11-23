@@ -17,6 +17,25 @@ IBMainWindow::IBMainWindow(QWidget *parent, Qt::WindowFlags flags)
    this->tbMain->setFloatable(false);
    this->tbMain->setMovable(false);
    
+   /* toolbar button for navigation */
+   this->tbHistoryBack = new QToolButton(this->tbMain);
+   this->tbHistoryBack->setIcon(QIcon::fromTheme(QStringLiteral("go-previous")));
+   this->tbHistoryBack->setEnabled(false);
+   this->tbMain->addWidget(this->tbHistoryBack);
+
+   this->tbHistoryForward = new QToolButton(this->tbMain);
+   this->tbHistoryForward->setIcon(QIcon::fromTheme(QStringLiteral("go-next")));
+   this->tbHistoryForward->setEnabled(false);
+   this->tbMain->addWidget(this->tbHistoryForward);
+
+   this->tbHome = new QToolButton(this->tbMain);
+   this->tbHome->setIcon(QIcon::fromTheme(QStringLiteral("go-home")));
+   this->tbMain->addWidget(this->tbHome);
+   
+   this->tbRefresh = new QToolButton(this->tbMain);
+   this->tbRefresh->setIcon(QIcon::fromTheme(QStringLiteral("view-refresh")));
+   this->tbMain->addWidget(this->tbRefresh);
+
    this->lblPath = new QLabel(QStringLiteral("Path   "));
    this->tbMain->addWidget(lblPath); 
    
@@ -25,6 +44,10 @@ IBMainWindow::IBMainWindow(QWidget *parent, Qt::WindowFlags flags)
    this->cbPath->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
    this->cbPath->setPath(QDir::homePath());
    this->tbMain->addWidget(cbPath);
+
+   this->connect(this->tbHistoryBack, SIGNAL(clicked()), this->cbPath, SLOT(goHistoryBack()));
+   this->connect(this->tbHistoryForward, SIGNAL(clicked()), this->cbPath, SLOT(goHistoryForward()));
+   this->connect(this->tbHome, SIGNAL(clicked()), this->cbPath, SLOT(goToHomeDirectory()));
 
    /* menu with button */
    this->tbMenu = new QToolButton(this->tbMain);
@@ -113,6 +136,7 @@ IBMainWindow::IBMainWindow(QWidget *parent, Qt::WindowFlags flags)
    this->ilwView = new IBImageListWidget(this);
    this->ilwView->setImagePath(QDir::homePath());
    this->connect(ilwView, SIGNAL(selectionChanged(const QModelIndex &)), SLOT(onImageWidgetSelectionChanged(const QModelIndex &)));
+   this->connect(this->tbRefresh, SIGNAL(clicked()), this->ilwView, SLOT(refresh()));
 
    this->iiwPreview = new IBImageInfoWidget(this);
    this->iiwPreview->hide();
@@ -231,9 +255,12 @@ void IBMainWindow::onMenuTriggered(QAction *action)
    }
 }
 
-/* Hides the preview widget and sets the new path to the list view widget */
+/* Hides the preview widget, enables/disables history toolbar button
+   and sets the new path to the list view widget */
 void IBMainWindow::onPathChanged(const QString &newpath)
 {
+   this->tbHistoryBack->setEnabled(!this->cbPath->isHistoryAtFirstIndex());
+   this->tbHistoryForward->setEnabled(!this->cbPath->isHistoryAtLastIndex());
    this->iiwPreview->hide();
    this->ilwView->setImagePath(newpath);
 }

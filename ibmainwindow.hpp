@@ -62,6 +62,14 @@ class IBMainWindow : public QMainWindow
     QMenu *mnMain;
     /* main toolbar */
     QToolBar *tbMain;
+    /* history back toolbar button*/
+    QToolButton *tbHistoryBack;
+    /* history forward toolbar button */
+    QToolButton *tbHistoryForward;
+    /* home toolbar button */
+    QToolButton *tbHome;
+    /* refresh toolbar button */ 
+    QToolButton *tbRefresh;
     /* menu toolbar button*/
     QToolButton *tbMenu;
     /* path label */
