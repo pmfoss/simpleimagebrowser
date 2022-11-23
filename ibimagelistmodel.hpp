@@ -88,6 +88,9 @@ class IBImageListModel : public QAbstractListModel
       QModelIndex setImageSortField(IBImageListModel::IBImageSortField field, const QModelIndex &selected = QModelIndex());
       IBImageListModel::IBImageSortField getImageSortField() const;
 
+   public slots:
+      void refresh();
+
    signals:
       void itemChanged(const QModelIndex &index);
 
@@ -122,6 +125,7 @@ class IBImageListModel : public QAbstractListModel
       void initImageDir();
       void initThumbnailLoader();
       void initImageDir(const QString& imagepath);
+      void loadImageData();
       QModelIndex getRawItemIndex(IBImageListAbstractItem *item);
       IBImageListAbstractItem *getRawItem(const QModelIndex &index);
 };

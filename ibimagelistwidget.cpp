@@ -31,6 +31,12 @@ void IBImageListWidget::resizeEvent(QResizeEvent *event)
    QListView::resizeEvent(event);
 }
 
+/* Invoke the refreshing of the list model. */
+void IBImageListWidget::refresh()
+{
+   this->ifmImageModel->refresh();
+}
+
 /* Sets a path (path) for the list model. */
 void IBImageListWidget::setImagePath(const QString &path)
 {

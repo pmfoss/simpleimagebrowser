@@ -39,6 +39,7 @@ class IBImageListWidget : public QListView
 
    public slots:
       void setImagePath(const QString &path);
+      void refresh();
 
    protected:
       void resizeEvent(QResizeEvent *event) override;

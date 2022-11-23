@@ -127,19 +127,13 @@ QVariant IBImageListModel::data(const QModelIndex &index, int role) const
 
    return QVariant();
 }
-
-/* Sets the path to images (imagepath), loads the file data, invokes the generation of the model structure
-   and starts the loading of thumbnails. */
-void IBImageListModel::setImagePath(const QString& imagepath)
-{
+/* Loads the file data, invokes the generation of the model structure and starts the loading of thumbnails. */
+void IBImageListModel::loadImageData()
+{   
    QFileInfoList fileinfos;
    QList<QFileInfo>::iterator it;
 
-   if(imagepath == dirImages.path())
-   {
-      return;
-   }
-
+  
    if(this->thdThumbLoader->isRunning())
    {
       this->thdThumbLoader->terminate();
@@ -147,7 +141,6 @@ void IBImageListModel::setImagePath(const QString& imagepath)
    }
 
    this->lstFileData.clear();
-   this->dirImages.setPath(imagepath);
 
    fileinfos = this->dirImages.entryInfoList();
 
@@ -158,6 +151,24 @@ void IBImageListModel::setImagePath(const QString& imagepath)
 
    this->buildItemsList();
    this->thdThumbLoader->start();
+}
+
+/* Invokes the repreparing of the model data */
+void IBImageListModel::refresh()
+{
+   this->dirImages.refresh();
+   this->loadImageData(); 
+}
+
+/* Sets the path to images (imagepath) and invokes the preparing of the model data */
+void IBImageListModel::setImagePath(const QString& imagepath)
+{ 
+   if(imagepath == dirImages.path())
+   {
+      return;
+   }
+   this->dirImages.setPath(imagepath);
+   this->loadImageData();
 }
 
 /* Returns the current image path. */
