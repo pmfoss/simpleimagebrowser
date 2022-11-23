@@ -39,6 +39,7 @@ IBFileComboBox::IBFileComboBox(const QString &path, QWidget *parent)
 /* Initializes all components of the combobox (TreeView, FileSystemModel). */
 void IBFileComboBox::initComboBox()
 {
+   this->iCurrentHistoryIndex = -1;
    this->setEditable(true);
    this->connect(this, SIGNAL(currentIndexChanged(int)), SLOT(onIndexChanged(int)));
 
@@ -54,7 +55,6 @@ void IBFileComboBox::initComboBox()
    this->fsModel->setRootPath(QDir::rootPath());
    this->setRootModelIndex(this->fsModel->index(QDir::rootPath()));
 
-   this->iCurrentHistoryIndex = -1;
    this->slHistory.clear();
    this->goToHomeDirectory();
 }
@@ -92,14 +92,14 @@ void IBFileComboBox::navigateTo(const QString &path, bool fromhistory)
       if(this->iCurrentHistoryIndex > 0)
       {
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-         this->slHistory.remove(this->iCurrentHistoryIndex, this->slHistory.size() - this->iCurrentHistoryIndex - 1)
+         this->slHistory.remove(this->iCurrentHistoryIndex, this->slHistory.size() - this->iCurrentHistoryIndex);
 #else
          while(this->iCurrentHistoryIndex < this->slHistory.size() - 1)
          {
             this->slHistory.removeLast();
          }
+#endif /*(QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)) */
       }
-#endif /*(QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))*/
       this->slHistory.append(path);
       this->iCurrentHistoryIndex = this->slHistory.size() - 1;
    }
