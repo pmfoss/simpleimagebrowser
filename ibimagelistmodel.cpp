@@ -610,7 +610,7 @@ void IBImageListSectionItem::sortItems(IBImageListModel::IBImageSortField field,
            case IBImageListModel::SortByFileType:
               if(order ==  Qt::AscendingOrder)
               {
-                 return QString::compare(itemA->getFileType(), itemB->getFileType(), Qt::CaseInsensitive) > 0;
+                 return QString::compare(itemA->getFileType(), itemB->getFileType(), Qt::CaseInsensitive) < 0;
               }
               else
               {
